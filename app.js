@@ -189,4 +189,17 @@ function onWindowResize() {
   renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
+import { Weapon } from './weapon.js';
+
+let weapon;
+
+function init() {
+  // ... Ton code déjà existant ...
+
+  weapon = new Weapon(camera, scene);
+
+  // Tir avec clic souris ou tactile
+  window.addEventListener('mousedown', () => weapon.shoot());
+  window.addEventListener('touchstart', () => weapon.shoot());
+}
 
