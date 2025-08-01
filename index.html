@@ -2,35 +2,18 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Horror Night - Jeu d'horreur 3D</title>
-  <style>
-    /* Style pour que la page prenne tout l’écran */
-    body, html {
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-      height: 100%;
-      background-color: #000; /* fond noir ambiance horreur */
-      color: white;
-      font-family: 'Arial', sans-serif;
-    }
-    #gameCanvas {
-      display: block;
-      width: 100vw;
-      height: 100vh;
-      touch-action: none; /* pour la tablette */
-    }
-  </style>
+  <title>Horror Night</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- Canvas où Three.js va afficher le jeu -->
-  <canvas id="gameCanvas"></canvas>
+  <div id="overlay">
+    <h1>Horror Night</h1>
+    <button id="startButton">Démarrer</button>
+  </div>
+  <canvas id="canvas"></canvas>
 
-  <!-- Librairie Three.js depuis CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/three@0.153.0/build/three.min.js"></script>
-
-  <!-- Ton script principal -->
-  <script src="app.js"></script>
+  <script src="https://unpkg.com/three@0.158.0/build/three.min.js"></script>
+  <script src="https://unpkg.com/three@0.158.0/examples/jsm/loaders/GLTFLoader.js"></script>
+  <script src="main.js" type="module"></script>
 </body>
 </html>
