@@ -70,6 +70,96 @@ function init() {
     pointerLocked = !!document.pointerLockElement;
   });
 
+  // app.js
+import * as THREE from 'three';
+import { Weapon } from './weapon.js';
+import { Enemy } from './enemy.js';
+
+let scene, camera, renderer;
+let weapon, enemies = [];
+let clock = new THREE.Clock();
+
+init();
+animate();
+
+function init() {
+  // Scène & Caméra
+  scene = new THREE.Scene();
+  camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+  camera.position.set(0, 1.6, 5);
+
+  // Renderer
+  renderer = new THREE.WebGLRenderer({ antialias: true, canvas: document.getElementById('gameCanvas') });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+
+  // Lumières
+  scene.add(new THREE.AmbientLight(0x404040));
+  const light = new THREE.PointLight(0xffffff, 1, 30);
+  light.position.set(0, 5, 0);
+  scene.add(light);
+
+  // Sol
+  const floor = new THREE.Mesh(
+    new THREE.PlaneGeometry(50, 50),
+    new THREE.MeshStandardMaterial({ color: 0x222222 })
+  );
+  floor.rotation.x = -Math.PI/2;
+  scene.add(floor);
+
+  // Instanciation Weapon
+  weapon = new Weapon(camera, scene);
+
+  // Création de quelques ennemis
+  enemies.push(new Enemy(scene,  2, -10));
+  enemies.push(new Enemy(scene, -3, -15));
+
+  // Gestion du tir
+  window.addEventListener('mousedown', shoot);
+  window.addEventListener('touchstart', shoot);
+
+  // Resize
+  window.addEventListener('resize', onWindowResize);
+}
+
+function shoot() {
+  // Affiche le laser
+  weapon.shoot();
+
+  // Create a Raycaster
+  const raycaster = new THREE.Raycaster();
+  const dir = new THREE.Vector3(0, 0, -1).applyQuaternion(camera.quaternion);
+  raycaster.set(camera.position, dir);
+
+  // Vérifie les collisions avec les ennemis
+  const hits = raycaster.intersectObjects(enemies.map(e => e.mesh));
+  if (hits.length > 0) {
+    const hitMesh = hits[0].object;
+    const enemy = enemies.find(e => e.mesh === hitMesh);
+    if (enemy &&!enemy.hit(25)) {
+      console.log('Ennemi touché, vie restante:', enemy.health);
+    } else {
+      console.log('Ennemi mort !');
+    }
+  }
+}
+
+function animate() {
+  requestAnimationFrame(animate);
+  const delta = clock.getDelta();
+
+  // Mettre à jour chaque ennemi
+  enemies.forEach(e => e.update(delta, camera.position));
+
+  renderer.render(scene, camera);
+}
+
+function onWindowResize() {
+  camera.aspect = window.innerWidth/window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
+
   // Mouvement souris
   document.addEventListener('mousemove', onMouseMove);
 
